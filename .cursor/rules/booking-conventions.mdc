@@ -1,0 +1,23 @@
+---
+description: Booking and ticketing conventions for The Garrison site
+alwaysApply: true
+---
+
+# The Garrison — Booking & Ticketing
+
+## Event tickets
+
+- Event ticket purchases link **out to external providers** (e.g. Ticketmaster, See Tickets, Dice).
+- Use `ticketUrl` on event data; render a CTA such as **GET TICKETS** that opens in a new tab (`target="_blank"`, `rel="noopener noreferrer"`).
+- Do **not** build in-app event checkout or reservation flows.
+- Free-entry events omit `ticketUrl` — no ticket CTA is shown.
+
+## Table booking
+
+- **No table booking or reservation** on this site.
+- Do not add table-booking forms, "Book a table" CTAs, "Reserve" table copy, or `#book` anchors.
+- Walk-ins only; contact details (phone, email, find us) remain for general enquiries.
+
+## Gig enquiries
+
+- "Want to play?" / artist booking uses `mailto:` to `gigs@thegarrison.co.uk` — this is for **acts**, not venue table reservations.
