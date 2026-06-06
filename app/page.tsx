@@ -10,6 +10,9 @@ import {
   TickerBand,
 } from "@/components/home";
 import { SectionDivider } from "@/components/ui/SectionDivider";
+import { FIXTURES_REVALIDATE_SECONDS } from "@/lib/football-data/constants";
+
+export const revalidate = FIXTURES_REVALIDATE_SECONDS;
 
 export default function Home() {
   return (

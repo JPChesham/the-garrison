@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Tv } from "lucide-react";
-import { FixtureCard } from "@/components/cards/FixtureCard";
+import { FixturesListWithLink } from "@/components/sport/FixturesList";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Tag } from "@/components/ui/Tag";
-import { fixtures, sportActionImage } from "@/lib/content/fixtures";
+import { getSportFixtures } from "@/lib/football-data";
+import { sportActionImage } from "@/lib/content/fixtures";
 
 function ScreensPromo({ className }: { className?: string }) {
   return (
@@ -24,7 +26,9 @@ function ScreensPromo({ className }: { className?: string }) {
   );
 }
 
-export function SportSection() {
+export async function SportSection() {
+  const fixtures = await getSportFixtures({ limit: 4 });
+
   return (
     <section id="sport" className="bg-charcoal py-16 xl:py-24">
       <Container>
@@ -40,9 +44,7 @@ export function SportSection() {
         />
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:gap-12">
           <div className="space-y-4">
-            {fixtures.map((fixture) => (
-              <FixtureCard key={fixture.label} fixture={fixture} />
-            ))}
+            <FixturesListWithLink fixtures={fixtures} showViewAll />
             <ScreensPromo className="mt-4 lg:hidden" />
           </div>
           <div className="sport-action-glow relative min-h-[400px] overflow-hidden rounded-sm">
@@ -74,6 +76,12 @@ export function SportSection() {
               <p className="font-barlow text-sm font-semibold text-white opacity-80">
                 The biggest moments in sport, live at The Garrison.
               </p>
+              <Link
+                href="/sport"
+                className="mt-4 inline-block font-barlow text-sm font-semibold uppercase tracking-wider text-electric hover:underline"
+              >
+                Full fixtures →
+              </Link>
             </div>
             <div className="pointer-events-none absolute inset-0 z-10 rounded-sm border-2 border-electric/30" />
           </div>

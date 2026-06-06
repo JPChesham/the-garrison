@@ -5,12 +5,16 @@ import { PageHero } from "@/components/layout/PageHero";
 import { FixturesList } from "@/components/sport/FixturesList";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
-import { fixtures, sportActionImage, sportIntro } from "@/lib/content/fixtures";
+import { getSportFixtures } from "@/lib/football-data";
+import { FIXTURES_REVALIDATE_SECONDS } from "@/lib/football-data/constants";
+import { sportActionImage, sportIntro } from "@/lib/content/fixtures";
+
+export const revalidate = FIXTURES_REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "Sport Fixtures | The Garrison",
   description:
-    "Live sport on six big screens at The Garrison, Barnsley. Sky Sports, TNT, ITV, and BBC.",
+    "Live sport on six big screens at The Garrison, Barnsley. Premier League, Championship, Champions League, and World Cup.",
 };
 
 function ScreensPromo() {
@@ -29,7 +33,9 @@ function ScreensPromo() {
   );
 }
 
-export default function SportPage() {
+export default async function SportPage() {
+  const fixtures = await getSportFixtures({ limit: 12 });
+
   return (
     <>
       <PageHero

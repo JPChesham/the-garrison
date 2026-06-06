@@ -1,6 +1,6 @@
 export { getFeaturedEvents, events } from "./events";
 export { getFeaturedLegends, legends } from "./legends";
-export { fixtures, sportActionImage } from "./fixtures";
+export { sportActionImage } from "./fixtures";
 export { drinksImage, drinksStats } from "./drinks";
 export { mapEmbedUrl, openingHours, ownerQuote } from "./site";
 
