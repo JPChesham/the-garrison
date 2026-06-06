@@ -6,10 +6,9 @@ import { FixturesList } from "@/components/sport/FixturesList";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
 import { getSportFixtures } from "@/lib/football-data";
-import { FIXTURES_REVALIDATE_SECONDS } from "@/lib/football-data/constants";
 import { sportActionImage, sportIntro } from "@/lib/content/fixtures";
 
-export const revalidate = FIXTURES_REVALIDATE_SECONDS;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Sport Fixtures | The Garrison",
