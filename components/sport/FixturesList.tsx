@@ -23,13 +23,6 @@ export function FixturesList({
         )}
       >
         <p className="font-barlow text-sm text-charcoal-light">{emptyMessage}</p>
-        {!process.env.FOOTBALL_DATA_API_TOKEN && (
-          <p className="mt-3 font-barlow text-xs text-charcoal-light/80">
-            Add{" "}
-            <code className="text-white">FOOTBALL_DATA_API_TOKEN</code> to load
-            live fixtures from football-data.org.
-          </p>
-        )}
       </div>
     );
   }

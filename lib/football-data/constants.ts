@@ -56,5 +56,7 @@ export const TRACKED_COMPETITION_IDS = Object.values(TRACKED_COMPETITIONS)
   .map((c) => c.id)
   .join(",");
 
-export const FIXTURES_REVALIDATE_SECONDS = 60;
+/** Upstream + page cache TTL. Client polls every 10s against a cached API route. */
+export const FIXTURES_REVALIDATE_SECONDS = 10;
+export const FIXTURES_POLL_INTERVAL_MS = 10_000;
 export const FIXTURES_LOOKAHEAD_DAYS = 15;

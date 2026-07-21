@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Tv } from "lucide-react";
-import { FixturesListWithLink } from "@/components/sport/FixturesList";
+import { LiveFixtures } from "@/components/sport/LiveFixtures";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Tag } from "@/components/ui/Tag";
-import { getSportFixtures } from "@/lib/football-data";
 import { sportActionImage } from "@/lib/content/fixtures";
 
 function ScreensPromo({ className }: { className?: string }) {
@@ -26,9 +25,7 @@ function ScreensPromo({ className }: { className?: string }) {
   );
 }
 
-export async function SportSection() {
-  const fixtures = await getSportFixtures({ limit: 4 });
-
+export function SportSection() {
   return (
     <section id="sport" className="bg-charcoal py-16 xl:py-24">
       <Container>
@@ -44,7 +41,7 @@ export async function SportSection() {
         />
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:gap-12">
           <div className="space-y-4">
-            <FixturesListWithLink fixtures={fixtures} showViewAll />
+            <LiveFixtures limit={4} showViewAll />
             <ScreensPromo className="mt-4 lg:hidden" />
           </div>
           <div className="sport-action-glow relative min-h-[400px] overflow-hidden rounded-sm">

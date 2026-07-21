@@ -1,5 +1,3 @@
-import { FIXTURES_REVALIDATE_SECONDS } from "./constants";
-
 const API_BASE = "https://api.football-data.org/v4";
 
 export class FootballDataError extends Error {
@@ -23,7 +21,8 @@ export async function footballDataFetch<T>(path: string): Promise<T> {
     headers: {
       "X-Auth-Token": token,
     },
-    next: { revalidate: FIXTURES_REVALIDATE_SECONDS },
+    // Used only by the dynamic fixtures API route — never by static pages.
+    cache: "no-store",
   });
 
   if (!response.ok) {

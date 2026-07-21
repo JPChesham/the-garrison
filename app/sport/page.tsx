@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Tv } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
-import { FixturesList } from "@/components/sport/FixturesList";
+import { LiveFixtures } from "@/components/sport/LiveFixtures";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
-import { getSportFixtures } from "@/lib/football-data";
 import { sportActionImage, sportIntro } from "@/lib/content/fixtures";
-
-export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Sport Fixtures | The Garrison",
@@ -32,9 +29,7 @@ function ScreensPromo() {
   );
 }
 
-export default async function SportPage() {
-  const fixtures = await getSportFixtures({ limit: 12 });
-
+export default function SportPage() {
   return (
     <>
       <PageHero
@@ -53,7 +48,7 @@ export default async function SportPage() {
           <ScreensPromo />
         </div>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:gap-12">
-          <FixturesList fixtures={fixtures} />
+          <LiveFixtures limit={12} />
           <div className="sport-action-glow relative min-h-[400px] overflow-hidden rounded-sm">
             <Image
               src={sportActionImage.src}

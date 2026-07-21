@@ -1,0 +1,34 @@
+---
+description: Use The Garrison Hygraph CMS for all website content
+alwaysApply: true
+---
+
+# The Garrison — Content CMS
+
+## Canonical MCP server
+
+For **all website content** (schema, entries, queries, publish, search), use only:
+
+**`user-The Garrison Hygraph CMS`**
+
+Do **not** use `user-The Royal Hygraph CMS` or any other Hygraph MCP server for this project.
+
+## When this applies
+
+- Creating or changing content models / fields / enumerations / components
+- Creating, updating, publishing, or searching content entries
+- Fetching content for pages (events, legends, site settings, home sections, drinks, sport copy, etc.)
+- GraphQL against the Content API for site data
+
+## Workflow
+
+1. Prefer MCP tools on **The Garrison Hygraph CMS** over inventing local static content.
+2. Schema changes: `get_project_info` → `get_management_operation_schema` → `submit_batch_migration`.
+3. Content changes: `list_entity_types` → `get_entity_schema` → `create_entry` / `update_entry` → `publish_entry`.
+4. Keep **live football fixtures** on football-data.org — do not model match scores/kickoffs in Hygraph. Sport *copy* and promo media may live in Hygraph.
+
+## Out of scope for Hygraph
+
+- Live fixtures / scores (API)
+- In-app table booking (not offered)
+- Event checkout (external `ticketUrl` only)
