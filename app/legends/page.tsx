@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { LegendsGrid } from "@/components/legends/LegendsGrid";
 import { Container } from "@/components/ui/Container";
-import { legends } from "@/lib/content/legends";
+import { getLegends } from "@/lib/hygraph/get-legends";
 
 export const metadata: Metadata = {
   title: "Garrison Legends | The Garrison",
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     "Artists who played The Garrison first — the legends archive from Barnsley's home of live music.",
 };
 
-export default function LegendsPage() {
+export default async function LegendsPage() {
+  const legends = await getLegends();
+
   return (
     <>
       <PageHero
@@ -25,7 +27,13 @@ export default function LegendsPage() {
         description="Every legend started here. Browse the archive of artists who've graced our stage."
       />
       <Container className="pb-16 xl:pb-24">
-        <LegendsGrid legends={legends} layout="grid" />
+        {legends.length > 0 ? (
+          <LegendsGrid legends={legends} layout="grid" />
+        ) : (
+          <p className="font-barlow text-base text-charcoal-light">
+            Legends archive coming soon.
+          </p>
+        )}
       </Container>
     </>
   );

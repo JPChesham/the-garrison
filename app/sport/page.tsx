@@ -1,58 +1,63 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Tv } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { LiveFixtures } from "@/components/sport/LiveFixtures";
+import { ScreensPromo } from "@/components/sport/ScreensPromo";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
-import { sportActionImage, sportIntro } from "@/lib/content/fixtures";
+import { getSportContent } from "@/lib/hygraph/get-sport-content";
 
-export const metadata: Metadata = {
-  title: "Sport Fixtures | The Garrison",
-  description:
-    "Live sport on six big screens at The Garrison, Barnsley. Premier League, Championship, Champions League, and World Cup.",
-};
-
-function ScreensPromo() {
-  return (
-    <div className="flex items-center gap-3 rounded-sm border border-electric bg-charcoal-mid px-5 py-3 stage-glow-blue">
-      <Tv className="h-5 w-5 text-electric xl:h-6 xl:w-6" />
-      <div>
-        <p className="font-bebas text-lg leading-tight text-white">
-          6 SCREENS. ALL THE ACTION.
-        </p>
-        <p className="font-barlow text-xs font-semibold uppercase tracking-wider text-charcoal-light">
-          Sky Sports · TNT · ITV · BBC
-        </p>
-      </div>
-    </div>
-  );
+export async function generateMetadata(): Promise<Metadata> {
+  const sport = await getSportContent();
+  return {
+    title: "Sport Fixtures | The Garrison",
+    description: sport.intro,
+  };
 }
 
-export default function SportPage() {
+function renderOverlayHeadline(headline: string) {
+  const lines = headline.split("\n");
+  return lines.map((line, index) => (
+    <span key={`${line}-${index}`}>
+      {index > 0 ? <br /> : null}
+      {/every screen/i.test(line) ? (
+        <span className="text-electric">{line}</span>
+      ) : (
+        line
+      )}
+    </span>
+  ));
+}
+
+export default async function SportPage() {
+  const sport = await getSportContent();
+
   return (
     <>
       <PageHero
         variant="electric"
-        eyebrow="— LIVE ON THE BIG SCREENS"
+        eyebrow={sport.eyebrow}
         eyebrowClassName="text-electric"
         title={
           <>
             SPORT <span className="text-electric">FIXTURES</span>
           </>
         }
-        description={sportIntro}
+        description={sport.intro}
       />
       <Container className="pb-16 xl:pb-24">
         <div className="mb-8">
-          <ScreensPromo />
+          <ScreensPromo
+            title={sport.screensPromoTitle}
+            subtitle={sport.screensPromoSubtitle}
+          />
         </div>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:gap-12">
           <LiveFixtures limit={12} />
           <div className="sport-action-glow relative min-h-[400px] overflow-hidden rounded-sm">
             <Image
-              src={sportActionImage.src}
-              alt={sportActionImage.alt}
+              src={sport.actionImage.src}
+              alt={sport.actionImage.alt}
               fill
               className="object-cover object-center"
             />
@@ -71,9 +76,7 @@ export default function SportPage() {
                 className="mb-2 font-bebas leading-none text-white"
                 style={{ fontSize: "clamp(2rem, 3.5vw, 3.5rem)" }}
               >
-                EVERY MATCH.
-                <br />
-                <span className="text-electric">EVERY SCREEN.</span>
+                {renderOverlayHeadline(sport.overlayHeadline)}
               </p>
             </div>
           </div>

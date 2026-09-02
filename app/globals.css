@@ -17,6 +17,7 @@
   --color-pint-gold: #4a2c0a;
   --color-pint-glow: #c8860a;
   --color-success: #2d7a2d;
+  --color-green: #2d7a2d;
 
   --font-bebas: var(--font-bebas-neue);
   --font-barlow: var(--font-barlow-family);
@@ -167,6 +168,18 @@ body {
     0 20px 60px rgba(0, 120, 255, 0.4);
 }
 
+.offset-shadow-green {
+  box-shadow:
+    8px 8px 0px #2d7a2d,
+    16px 16px 0px rgba(45, 122, 45, 0.25);
+}
+
+.poster-card:hover.offset-shadow-green {
+  box-shadow:
+    4px 4px 0px #2d7a2d,
+    0 20px 60px rgba(45, 122, 45, 0.4);
+}
+
 .stencil-border {
   border: 3px solid #e85d3a;
   position: relative;
@@ -195,6 +208,14 @@ body {
 
 .stencil-border-blue::before {
   border-color: rgba(0, 120, 255, 0.3);
+}
+
+.stencil-border-green {
+  border-color: #2d7a2d;
+}
+
+.stencil-border-green::before {
+  border-color: rgba(45, 122, 45, 0.3);
 }
 
 .section-divider {

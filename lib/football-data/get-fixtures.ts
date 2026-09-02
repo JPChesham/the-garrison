@@ -1,10 +1,7 @@
 import type { FixtureData } from "@/components/cards/FixtureCard";
 import { footballDataFetch } from "./client";
 import { TRACKED_COMPETITION_IDS } from "./constants";
-import {
-  getFixturesDateRange,
-  mapMatchesToFixtures,
-} from "./map-fixture";
+import { getFixturesDateRange, mapMatchesToFixtures } from "./map-fixture";
 import type { FootballDataMatchesResponse } from "./types";
 
 export type GetSportFixturesOptions = {

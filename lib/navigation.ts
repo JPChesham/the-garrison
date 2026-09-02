@@ -6,6 +6,10 @@ import {
   Trophy,
   type LucideIcon,
 } from "lucide-react";
+import type { SiteConfig } from "@/lib/content/types";
+import { defaultSiteConfig } from "@/lib/content/fallbacks";
+
+export type { SiteConfig };
 
 export const navLinks = [
   {
@@ -66,20 +70,7 @@ export const footerNavLinks = [
   { href: "/#community", label: "Find Us" },
 ];
 
-export const legalLinks = [
-  { href: "/privacy", label: "Privacy Policy" },
-];
+export const legalLinks = [{ href: "/privacy", label: "Privacy Policy" }];
 
-export const siteConfig = {
-  name: "THE GARRISON",
-  tagline: "Barnsley's Home of Live Music & Sport",
-  address: "47 Market Street, Barnsley, S70 1SQ",
-  addressShort: "47 Market St, Barnsley S70 1SQ",
-  phone: "01226 000 000",
-  phoneHref: "tel:01226000000",
-  email: "hello@thegarrison.co.uk",
-  gigsEmail: "gigs@thegarrison.co.uk",
-  instagram: "https://instagram.com/the.garrison",
-  instagramHandle: "@the.garrison",
-  facebook: "https://www.facebook.com/TheGarrisonBarnsley",
-};
+/** @deprecated Prefer getSiteSettings().siteConfig — kept as sync fallback for client components */
+export const siteConfig: SiteConfig = defaultSiteConfig;

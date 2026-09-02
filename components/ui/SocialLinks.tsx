@@ -1,29 +1,29 @@
+import type { SiteConfig } from "@/lib/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import {
   FacebookIcon,
   InstagramIcon,
-  // TikTokIcon,
 } from "@/components/icons/SocialIcons";
-import { siteConfig } from "@/lib/navigation";
 
 type SocialIcon = typeof InstagramIcon;
 
-const links: { href: string; icon: SocialIcon; label: string }[] = [
-  { href: siteConfig.instagram, icon: InstagramIcon, label: "Instagram" },
-  { href: siteConfig.facebook, icon: FacebookIcon, label: "Facebook" },
-  // { href: siteConfig.tiktok, icon: TikTokIcon, label: "TikTok" },
-];
-
 type SocialLinksProps = {
+  siteConfig: SiteConfig;
   variant?: "header" | "drawer" | "footer";
   className?: string;
 };
 
 export function SocialLinks({
+  siteConfig,
   variant = "header",
   className,
 }: SocialLinksProps) {
+  const links: { href: string; icon: SocialIcon; label: string }[] = [
+    { href: siteConfig.instagram, icon: InstagramIcon, label: "Instagram" },
+    { href: siteConfig.facebook, icon: FacebookIcon, label: "Facebook" },
+  ];
+
   if (variant === "footer") {
     return (
       <div className={cn("flex gap-4", className)}>
@@ -65,7 +65,7 @@ export function SocialLinks({
           key={label}
           href={href}
           aria-label={label}
-          className="text-charcoal-light transition-colors hover:text-ember"
+          className="text-white transition-colors hover:text-ember"
         >
           <Icon className="h-4 w-4" />
         </Link>

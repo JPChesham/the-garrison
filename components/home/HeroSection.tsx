@@ -2,10 +2,28 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { AwardBadge } from "@/components/ui/AwardBadge";
 import { Button } from "@/components/ui/Button";
-import { heroContent } from "@/lib/content/home";
-import { siteConfig } from "@/lib/navigation";
+import { heroLiveLabel } from "@/lib/content/home";
+import { getNextUpcomingEvent } from "@/lib/hygraph/get-events";
+import { getHomeHero } from "@/lib/hygraph/get-home-content";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 
-export function HeroSection() {
+export async function HeroSection() {
+  const [nextEvent, heroContent, settings] = await Promise.all([
+    getNextUpcomingEvent(),
+    getHomeHero(),
+    getSiteSettings(),
+  ]);
+
+  const liveLabel = nextEvent
+    ? heroLiveLabel({
+        title: nextEvent.title,
+        date: nextEvent.date,
+        month: nextEvent.month,
+        startsAt: nextEvent.startsAt,
+        startTime: nextEvent.meta.find((item) => item.icon === "clock")?.label,
+      })
+    : null;
+
   return (
     <section
       id="hero"
@@ -25,12 +43,14 @@ export function HeroSection() {
             />
           </div>
           <div className="relative z-10">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="live-dot inline-block h-2.5 w-2.5 rounded-full bg-ember" />
-              <span className="font-barlow text-xs font-extrabold uppercase tracking-widest text-ember">
-                {heroContent.liveLabel}
-              </span>
-            </div>
+            {liveLabel ? (
+              <div className="mb-4 flex items-center gap-2">
+                <span className="live-dot inline-block h-2.5 w-2.5 rounded-full bg-ember" />
+                <span className="font-barlow text-xs font-extrabold uppercase tracking-widest text-ember">
+                  {liveLabel}
+                </span>
+              </div>
+            ) : null}
             <h1
               className="stencil-text-hero mb-4 font-bebas leading-[0.88] text-white"
               style={{
@@ -57,14 +77,22 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="mb-8 font-barlow text-sm font-bold uppercase tracking-widest text-white opacity-70">
-              No Frills. All Thrills. Est. 2009.
+              {heroContent.tagline}
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <Button href="#events" size="lg" className="stage-glow-ember">
-                SEE EVENTS
+              <Button
+                href={heroContent.primaryCtaHref}
+                size="lg"
+                className="stage-glow-ember"
+              >
+                {heroContent.primaryCtaLabel}
               </Button>
-              <Button href="#sport" variant="outline-electric" size="lg">
-                LIVE SPORT
+              <Button
+                href={heroContent.secondaryCtaHref}
+                variant="outline-electric"
+                size="lg"
+              >
+                {heroContent.secondaryCtaLabel}
               </Button>
             </div>
             <div className="mt-8 flex items-center gap-6">
@@ -92,7 +120,7 @@ export function HeroSection() {
               <div className="hidden items-center gap-2 text-charcoal-light md:flex">
                 <MapPin className="h-4 w-4 text-ember" />
                 <span className="font-barlow text-sm font-semibold">
-                  {siteConfig.addressShort}
+                  {settings.siteConfig.addressShort}
                 </span>
               </div>
             </div>

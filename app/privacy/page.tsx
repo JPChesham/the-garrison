@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/lib/navigation";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | The Garrison",
   description: "Privacy policy for The Garrison website.",
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const { siteConfig } = await getSiteSettings();
+
   return (
     <>
       <PageHero

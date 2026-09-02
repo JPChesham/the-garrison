@@ -1,35 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Guitar, Mic, Music } from "lucide-react";
+import { Guitar, Mic, Music, type LucideIcon } from "lucide-react";
 import { FeatureRow } from "@/components/cards/FeatureRow";
 import { AwardBadge } from "@/components/ui/AwardBadge";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
 import { liveMusicImage } from "@/lib/content/home";
-import { siteConfig } from "@/lib/navigation";
+import type { RegularNightData } from "@/lib/content/types";
+import { getRegularNights } from "@/lib/hygraph/get-regular-nights";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 
-const musicFeatures = [
-  {
-    icon: Guitar,
-    iconBgClassName: "bg-purple",
-    title: "FRIDAY NIGHTS",
-    description: "Live bands from 9PM · Free entry",
-  },
-  {
-    icon: Music,
-    iconBgClassName: "bg-electric",
-    title: "SATURDAY NIGHTS",
-    description: "DJ sets & live acts from 10PM",
-  },
-  {
-    icon: Mic,
-    iconBgClassName: "bg-ember",
-    title: "OPEN MIC WEDNESDAY",
-    description: "Sign up from 7PM · All welcome",
-  },
-];
+const ICON_MAP: Record<
+  RegularNightData["iconKey"],
+  { icon: LucideIcon; iconBgClassName: string }
+> = {
+  guitar: { icon: Guitar, iconBgClassName: "bg-purple" },
+  music: { icon: Music, iconBgClassName: "bg-electric" },
+  mic: { icon: Mic, iconBgClassName: "bg-ember" },
+};
 
-export function LiveMusicSection() {
+export async function LiveMusicSection() {
+  const [regularNights, settings] = await Promise.all([
+    getRegularNights(),
+    getSiteSettings(),
+  ]);
+
   return (
     <section
       id="music-section"
@@ -75,9 +70,18 @@ export function LiveMusicSection() {
               <span className="text-purple-light">MUSIC</span>
             </h2>
             <div className="mb-8 space-y-4">
-              {musicFeatures.map((feature) => (
-                <FeatureRow key={feature.title} {...feature} />
-              ))}
+              {regularNights.map((night) => {
+                const { icon, iconBgClassName } = ICON_MAP[night.iconKey];
+                return (
+                  <FeatureRow
+                    key={night.title}
+                    icon={icon}
+                    iconBgClassName={iconBgClassName}
+                    title={night.title}
+                    description={night.description}
+                  />
+                );
+              })}
             </div>
             <div className="flex items-stretch gap-4">
               <div className="flex items-center gap-3">
@@ -110,7 +114,7 @@ export function LiveMusicSection() {
                   We&apos;re always booking acts.
                 </p>
                 <Link
-                  href={`mailto:${siteConfig.gigsEmail}`}
+                  href={`mailto:${settings.siteConfig.gigsEmail}`}
                   className="font-barlow text-sm font-bold uppercase tracking-wider text-ember transition-colors hover:text-amber"
                 >
                   GET IN TOUCH →

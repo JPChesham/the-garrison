@@ -1,6 +1,7 @@
 import { Marquee } from "@/components/ui/Marquee";
-import { marqueeItems } from "@/lib/content/home";
+import { getMarqueeItems } from "@/lib/hygraph/get-home-content";
 
-export function TickerBand() {
+export async function TickerBand() {
+  const marqueeItems = await getMarqueeItems();
   return <Marquee items={marqueeItems} />;
 }

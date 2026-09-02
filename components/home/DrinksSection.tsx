@@ -2,11 +2,35 @@ import Image from "next/image";
 import { AwardBadge } from "@/components/ui/AwardBadge";
 import { StatCard } from "@/components/cards/StatCard";
 import { Container } from "@/components/ui/Container";
-import { drinksImage, drinksStats } from "@/lib/content/drinks";
+import { getDrinksContent } from "@/lib/hygraph/get-drinks-content";
 
-export function DrinksSection() {
+function renderHeadline(headline: string) {
+  const lines = headline.split("\n");
+  return lines.map((line, index) => {
+    const isAccent = /pint|period/i.test(line);
+    return (
+      <span key={`${line}-${index}`}>
+        {index > 0 ? <br /> : null}
+        {isAccent ? (
+          <span className={/period/i.test(line) ? "text-ember" : "text-amber"}>
+            {line}
+          </span>
+        ) : (
+          line
+        )}
+      </span>
+    );
+  });
+}
+
+export async function DrinksSection() {
+  const drinks = await getDrinksContent();
+
   return (
-    <section id="drinks" className="pint-gradient relative overflow-hidden py-16 xl:py-24">
+    <section
+      id="drinks"
+      className="pint-gradient relative overflow-hidden py-16 xl:py-24"
+    >
       <div
         className="absolute inset-0 opacity-20"
         style={{
@@ -18,41 +42,34 @@ export function DrinksSection() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 xl:gap-20">
           <div>
             <p className="mb-3 font-barlow text-xs font-extrabold uppercase tracking-widest text-amber">
-              — THE MIDNIGHT POUR
+              {drinks.eyebrow}
             </p>
             <h2
               className="mb-4 font-bebas leading-none tracking-wide text-white"
               style={{ fontSize: "clamp(3rem, 6vw, 6rem)" }}
             >
-              THE BEST
-              <br />
-              <span className="text-amber">PINT</span> IN
-              <br />
-              BARNSLEY.
-              <br />
-              <span className="text-ember">PERIOD.</span>
+              {renderHeadline(drinks.headline)}
             </h2>
             <p className="mb-2 font-barlow text-base font-semibold text-charcoal-light">
-              119.5 seconds. No shortcuts. No compromises.
+              {drinks.tagline}
             </p>
             <p className="mb-8 font-barlow text-sm leading-relaxed text-white opacity-80">
-              Every Guinness poured to perfection. Every time. We&apos;ve been
-              doing this since 2009 and we&apos;re not about to cut corners now.
+              {drinks.body}
             </p>
             <div className="mb-8 grid grid-cols-3 gap-4">
-              {drinksStats.map((stat) => (
+              {drinks.stats.map((stat) => (
                 <StatCard key={stat.label} {...stat} />
               ))}
             </div>
             <div className="rounded-sm border-l-4 border-amber bg-black/30 p-5">
               <p className="font-bebas text-xl leading-tight text-amber">
-                HAPPY HOUR
+                {drinks.happyHour.title}
               </p>
               <p className="font-barlow text-base font-bold text-white">
-                Mon–Fri · 4PM – 7PM
+                {drinks.happyHour.times}
               </p>
               <p className="mt-1 font-barlow text-sm text-charcoal-light">
-                All draught pints £4.50. All day Sunday.
+                {drinks.happyHour.detail}
               </p>
             </div>
           </div>
@@ -66,8 +83,8 @@ export function DrinksSection() {
               }}
             >
               <Image
-                src={drinksImage.src}
-                alt={drinksImage.alt}
+                src={drinks.image.src}
+                alt={drinks.image.alt}
                 fill
                 className="object-cover object-center"
               />

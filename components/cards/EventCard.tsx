@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+import { Clock, DoorOpen, Ticket } from "@/lib/icons";
 import { Button } from "@/components/ui/Button";
 import { DateBadge } from "@/components/ui/DateBadge";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -8,10 +8,12 @@ import { Tag } from "@/components/ui/Tag";
 import type { EventCategory } from "@/lib/content/events";
 import { cn } from "@/lib/utils/cn";
 
-export type EventCardVariant = "purple" | "ember" | "electric";
+export type EventCardVariant = "purple" | "ember" | "electric" | "green";
+
+export type EventMetaIcon = "clock" | "door" | "ticket";
 
 export type EventMeta = {
-  icon: LucideIcon;
+  icon: EventMetaIcon;
   label: string;
 };
 
@@ -20,8 +22,9 @@ export type EventData = {
   category: EventCategory;
   featured?: boolean;
   variant: EventCardVariant;
-  image: string;
+  image?: string;
   imageAlt: string;
+  startsAt: string;
   day: string;
   date: string;
   month: string;
@@ -35,6 +38,7 @@ export type EventData = {
   marginTop?: string;
   ticketUrl?: string;
   ticketCta?: string;
+  isFree?: boolean;
 };
 
 const variantConfig: Record<
@@ -43,7 +47,7 @@ const variantConfig: Record<
     offsetShadow: string;
     stencilBorder: string;
     gradient: string;
-    dateVariant: "amber" | "ember" | "electric";
+    dateVariant: "amber" | "ember" | "electric" | "green";
   }
 > = {
   purple: {
@@ -64,12 +68,34 @@ const variantConfig: Record<
     gradient: "from-electric to-purple",
     dateVariant: "electric",
   },
+  green: {
+    offsetShadow: "offset-shadow-green",
+    stencilBorder: "stencil-border-green",
+    gradient: "from-green to-amber",
+    dateVariant: "green",
+  },
 };
+
+const META_ICONS = {
+  clock: Clock,
+  door: DoorOpen,
+  ticket: Ticket,
+} as const;
 
 type EventCardProps = {
   event: EventData;
   linkToDetail?: boolean;
 };
+
+function eventInitials(title: string) {
+  return title
+    .replaceAll("\n", " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("");
+}
 
 export function EventCard({ event, linkToDetail = true }: EventCardProps) {
   const config = variantConfig[event.variant];
@@ -77,14 +103,22 @@ export function EventCard({ event, linkToDetail = true }: EventCardProps) {
 
   const mainContent = (
     <>
-      <div className="h-52 overflow-hidden">
-        <Image
-          src={event.image}
-          alt={event.imageAlt}
-          width={400}
-          height={208}
-          className="h-full w-full object-cover"
-        />
+      <div className="h-52 overflow-hidden bg-charcoal">
+        {event.image ? (
+          <Image
+            src={event.image}
+            alt={event.imageAlt}
+            width={400}
+            height={208}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <span className="font-bebas text-6xl leading-none text-ember">
+              {eventInitials(event.title)}
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-5 pb-0">
         <div className="mb-4 flex items-start justify-between">
@@ -134,7 +168,7 @@ export function EventCard({ event, linkToDetail = true }: EventCardProps) {
         <div className="flex items-center justify-between border-t border-charcoal-light p-5 pt-4">
           <div className="flex items-center gap-4 font-barlow text-xs font-semibold uppercase tracking-wider text-charcoal-light">
             {event.meta.map((item) => {
-              const Icon = item.icon;
+              const Icon = META_ICONS[item.icon];
               return (
                 <span key={item.label} className="flex items-center gap-1">
                   <Icon className="h-3 w-3 text-ember" />

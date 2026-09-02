@@ -1,9 +1,11 @@
 import type { FixtureData } from "@/components/cards/FixtureCard";
 import {
+  FIXTURES_LOOKAHEAD_DAYS,
   TRACKED_COMPETITIONS,
   type TrackedCompetitionCode,
 } from "./constants";
 import type { FootballDataMatch, FootballDataTeam, MatchStatus } from "./types";
+import { add } from "date-fns";
 
 const LONDON = "Europe/London";
 
@@ -24,9 +26,9 @@ function formatApiDate(date: Date): string {
 
 export function getFixturesDateRange(now = new Date()) {
   const dateFrom = formatApiDate(now);
-  const end = new Date(now);
-  end.setUTCDate(end.getUTCDate() + 9);
-  const dateTo = formatApiDate(end);
+  const dateTo = add(now, { days: FIXTURES_LOOKAHEAD_DAYS })
+    .toISOString()
+    .slice(0, 10);
 
   return { dateFrom, dateTo };
 }
@@ -44,7 +46,15 @@ function getCompetitionCode(
 }
 
 function readScoreSide(
-  side: { home?: number | null; away?: number | null; homeTeam?: number | null; awayTeam?: number | null } | null | undefined,
+  side:
+    | {
+        home?: number | null;
+        away?: number | null;
+        homeTeam?: number | null;
+        awayTeam?: number | null;
+      }
+    | null
+    | undefined,
   team: "home" | "away",
 ): number | null {
   if (!side) return null;
@@ -127,7 +137,10 @@ export function isLiveMatch(status: MatchStatus): boolean {
   return LIVE_STATUSES.has(status);
 }
 
-export function sortFixtures(a: FootballDataMatch, b: FootballDataMatch): number {
+export function sortFixtures(
+  a: FootballDataMatch,
+  b: FootballDataMatch,
+): number {
   const aLive = isLiveMatch(a.status);
   const bLive = isLiveMatch(b.status);
 
@@ -136,11 +149,15 @@ export function sortFixtures(a: FootballDataMatch, b: FootballDataMatch): number
   return new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime();
 }
 
-export function filterUpcomingMatches(matches: FootballDataMatch[]): FootballDataMatch[] {
+export function filterUpcomingMatches(
+  matches: FootballDataMatch[],
+): FootballDataMatch[] {
   return matches.filter((match) => VISIBLE_STATUSES.has(match.status));
 }
 
-export function mapMatchToFixture(match: FootballDataMatch): FixtureData | null {
+export function mapMatchToFixture(
+  match: FootballDataMatch,
+): FixtureData | null {
   const code = getCompetitionCode(match);
   if (!code) return null;
 
@@ -149,7 +166,8 @@ export function mapMatchToFixture(match: FootballDataMatch): FixtureData | null 
   const homeScore = readScoreSide(match.score?.fullTime, "home");
   const awayScore = readScoreSide(match.score?.fullTime, "away");
   const showScore =
-    live || (match.status === "FINISHED" && homeScore != null && awayScore != null);
+    live ||
+    (match.status === "FINISHED" && homeScore != null && awayScore != null);
 
   return {
     id: String(match.id),
@@ -176,7 +194,9 @@ export function mapMatchToFixture(match: FootballDataMatch): FixtureData | null 
   };
 }
 
-export function mapMatchesToFixtures(matches: FootballDataMatch[]): FixtureData[] {
+export function mapMatchesToFixtures(
+  matches: FootballDataMatch[],
+): FixtureData[] {
   return filterUpcomingMatches(matches)
     .sort(sortFixtures)
     .map(mapMatchToFixture)

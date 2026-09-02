@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { EventsGrid } from "@/components/events/EventsGrid";
-import { getFeaturedEvents } from "@/lib/content/events";
+import { getFeaturedEvents } from "@/lib/hygraph/get-events";
 
-export function EventsSection() {
-  const featuredEvents = getFeaturedEvents();
+export async function EventsSection() {
+  const featuredEvents = await getFeaturedEvents();
 
   return (
     <section id="events" className="purple-light-section py-16 xl:py-24">
@@ -24,7 +24,13 @@ export function EventsSection() {
             </Button>
           }
         />
-        <EventsGrid events={featuredEvents} />
+        {featuredEvents.length > 0 ? (
+          <EventsGrid events={featuredEvents} />
+        ) : (
+          <p className="font-barlow text-base text-charcoal-light">
+            Upcoming events coming soon.
+          </p>
+        )}
       </Container>
     </section>
   );

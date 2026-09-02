@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils/cn";
 
-type DateBadgeVariant = "amber" | "ember" | "electric";
+type DateBadgeVariant = "amber" | "ember" | "electric" | "green";
 
 type DateBadgeProps = {
   day: string;
@@ -14,6 +14,7 @@ const variantClasses: Record<DateBadgeVariant, string> = {
   amber: "bg-amber text-charcoal",
   ember: "bg-ember text-white",
   electric: "bg-electric text-white",
+  green: "bg-green text-white",
 };
 
 export function DateBadge({

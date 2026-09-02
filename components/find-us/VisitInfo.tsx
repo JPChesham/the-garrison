@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import { mapEmbedUrl, openingHours, visitInfo } from "@/lib/content/site";
-import { siteConfig } from "@/lib/navigation";
+import type {
+  OpeningHoursSlot,
+  SiteConfig,
+  VisitDetails,
+} from "@/lib/content/types";
 
 type VisitInfoProps = {
+  siteConfig: SiteConfig;
+  openingHours: OpeningHoursSlot[];
+  visitInfo: VisitDetails;
+  mapEmbedUrl: string;
   showMap?: boolean;
   showQuote?: boolean;
   showVisitDetails?: boolean;
@@ -12,6 +19,10 @@ type VisitInfoProps = {
 };
 
 export function VisitInfo({
+  siteConfig,
+  openingHours,
+  visitInfo,
+  mapEmbedUrl,
   showMap = true,
   showQuote = false,
   showVisitDetails = false,

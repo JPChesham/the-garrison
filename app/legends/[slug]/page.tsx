@@ -7,22 +7,23 @@ import { Container } from "@/components/ui/Container";
 import {
   getAllLegendSlugs,
   getLegendBySlug,
-} from "@/lib/content/legends";
+} from "@/lib/hygraph/get-legends";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  return getAllLegendSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllLegendSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const legend = getLegendBySlug(slug);
+  const legend = await getLegendBySlug(slug);
   if (!legend) return { title: "Legend Not Found" };
 
-  const name = legend.name.replace("\n", " ");
+  const name = legend.name.replaceAll("\n", " ");
   return {
     title: `${name} | Garrison Legends`,
     description: legend.bio,
@@ -31,10 +32,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function LegendDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const legend = getLegendBySlug(slug);
+  const legend = await getLegendBySlug(slug);
   if (!legend) notFound();
 
-  const namePlain = legend.name.replace("\n", " ");
+  const namePlain = legend.imageAlt ?? legend.name.replaceAll("\n", " ");
 
   return (
     <>
@@ -48,14 +49,27 @@ export default async function LegendDetailPage({ params }: PageProps) {
             ]}
           />
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
-            <div className="relative aspect-[280/380] max-w-md overflow-hidden rounded-sm">
-              <Image
-                src={legend.image}
-                alt={namePlain}
-                fill
-                className="object-cover"
-                priority
-              />
+            <div className="relative aspect-[280/380] max-w-md overflow-hidden rounded-sm bg-charcoal-mid">
+              {legend.image ? (
+                <Image
+                  src={legend.image}
+                  alt={namePlain}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <span className="font-bebas text-7xl leading-none text-ember">
+                    {namePlain
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((part) => part[0])
+                      .join("")}
+                  </span>
+                </div>
+              )}
             </div>
             <div>
               <h1 className="font-bebas text-[clamp(2.5rem,5vw,4rem)] leading-none whitespace-pre-line text-white">

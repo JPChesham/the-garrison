@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Barlow } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -16,26 +17,30 @@ const barlow = Barlow({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "The Garrison | Barnsley's Home of Live Music & Sport",
-  description:
-    "Live music every weekend, all major sport on 6 big screens, and the best pint in Barnsley. Est. 2009.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitle,
+    description: settings.seoDescription,
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html
       lang="en"
       className={`${bebasNeue.variable} ${barlow.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-charcoal font-barlow text-foreground overflow-x-hidden">
-        <Header />
+        <Header siteConfig={settings.siteConfig} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer siteConfig={settings.siteConfig} />
       </body>
     </html>
   );

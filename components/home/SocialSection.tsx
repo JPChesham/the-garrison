@@ -2,10 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Container } from "@/components/ui/Container";
-import { socialImages } from "@/lib/content/home";
-import { siteConfig } from "@/lib/navigation";
+import { getSocialImages } from "@/lib/hygraph/get-home-content";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 
-export function SocialSection() {
+export async function SocialSection() {
+  const [socialImages, settings] = await Promise.all([
+    getSocialImages(),
+    getSiteSettings(),
+  ]);
+
   return (
     <section id="social" className="bg-charcoal-mid py-16 xl:py-20">
       <Container>
@@ -23,7 +28,7 @@ export function SocialSection() {
         <div className="mb-8 grid grid-cols-3 gap-3 md:grid-cols-6">
           {socialImages.map((image) => (
             <div
-              key={image.src}
+              key={`${image.src}-${image.alt}`}
               className={`h-40 overflow-hidden rounded-sm ${image.colSpan}`}
             >
               <Image
@@ -38,11 +43,11 @@ export function SocialSection() {
         </div>
         <div className="flex justify-center">
           <Link
-            href={siteConfig.instagram}
+            href={settings.siteConfig.instagram}
             className="flex items-center gap-3 rounded-sm border border-charcoal-light px-6 py-3 font-barlow text-base font-bold text-white transition-colors hover:border-ember hover:text-ember"
           >
             <InstagramIcon className="h-5 w-5" />
-            {siteConfig.instagramHandle}
+            {settings.siteConfig.instagramHandle}
           </Link>
         </div>
       </Container>

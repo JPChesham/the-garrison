@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { VisitInfo } from "@/components/find-us/VisitInfo";
-import { ownerQuote } from "@/lib/content/site";
+import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 
-export function CommunitySection() {
+export async function CommunitySection() {
+  const settings = await getSiteSettings();
+  const { ownerQuote, siteConfig, openingHours, visitInfo, mapEmbedUrl } =
+    settings;
+
   return (
     <section id="community" className="bg-charcoal py-16 xl:py-24">
       <Container>
@@ -49,7 +53,13 @@ export function CommunitySection() {
               </div>
             </div>
           </div>
-          <VisitInfo />
+          <VisitInfo
+            siteConfig={siteConfig}
+            openingHours={openingHours}
+            visitInfo={visitInfo}
+            mapEmbedUrl={mapEmbedUrl}
+            showVisitDetails
+          />
         </div>
       </Container>
     </section>

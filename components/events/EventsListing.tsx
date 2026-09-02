@@ -2,19 +2,24 @@
 
 import { useMemo, useState } from "react";
 import { EventsGrid } from "@/components/events/EventsGrid";
+import type { EventData } from "@/components/cards/EventCard";
 import { Container } from "@/components/ui/Container";
 import type { EventCategory } from "@/lib/content/events";
-import { events } from "@/lib/content/events";
 import { cn } from "@/lib/utils/cn";
 
 const filters: { label: string; value: EventCategory | "all" }[] = [
   { label: "ALL", value: "all" },
+  { label: "LIVE SHOW", value: "live-show" },
   { label: "LIVE BAND", value: "live-band" },
   { label: "DJ NIGHT", value: "dj-night" },
   { label: "ACOUSTIC", value: "acoustic" },
 ];
 
-export function EventsListing() {
+type EventsListingProps = {
+  events: EventData[];
+};
+
+export function EventsListing({ events }: EventsListingProps) {
   const [active, setActive] = useState<EventCategory | "all">("all");
 
   const filtered = useMemo(
@@ -22,12 +27,12 @@ export function EventsListing() {
       active === "all"
         ? events
         : events.filter((event) => event.category === active),
-    [active],
+    [active, events],
   );
 
   return (
     <Container className="pb-16 xl:pb-24">
-      <div className="mb-8 flex flex-wrap gap-3">
+      <div className="my-8 flex flex-wrap gap-3">
         {filters.map((filter) => (
           <button
             key={filter.value}
@@ -44,7 +49,13 @@ export function EventsListing() {
           </button>
         ))}
       </div>
-      <EventsGrid events={filtered} />
+      {filtered.length > 0 ? (
+        <EventsGrid events={filtered} />
+      ) : (
+        <p className="font-barlow text-base text-charcoal-light">
+          No upcoming events in this category.
+        </p>
+      )}
     </Container>
   );
 }

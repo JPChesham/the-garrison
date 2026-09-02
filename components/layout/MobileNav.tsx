@@ -5,14 +5,18 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { cn } from "@/lib/utils/cn";
-import { mobileNavLinks, siteConfig } from "@/lib/navigation";
+import {
+  mobileNavLinks,
+  type SiteConfig,
+} from "@/lib/navigation";
 
 type MobileNavProps = {
   open: boolean;
   onClose: () => void;
+  siteConfig: SiteConfig;
 };
 
-export function MobileNav({ open, onClose }: MobileNavProps) {
+export function MobileNav({ open, onClose, siteConfig }: MobileNavProps) {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -77,7 +81,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <p className="font-barlow text-sm text-charcoal-light">
             {siteConfig.addressShort}
           </p>
-          <SocialLinks variant="drawer" className="mt-3" />
+          <SocialLinks
+            siteConfig={siteConfig}
+            variant="drawer"
+            className="mt-3"
+          />
         </div>
       </nav>
     </>

@@ -2,13 +2,16 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LegendsGrid } from "@/components/legends/LegendsGrid";
-import { getFeaturedLegends } from "@/lib/content/legends";
+import { getFeaturedLegends } from "@/lib/hygraph/get-legends";
 
-export function LegendsSection() {
-  const featuredLegends = getFeaturedLegends();
+export async function LegendsSection() {
+  const featuredLegends = await getFeaturedLegends();
 
   return (
-    <section id="legends" className="purple-light-section overflow-hidden py-16 xl:py-24">
+    <section
+      id="legends"
+      className="purple-light-section overflow-hidden py-16 xl:py-24"
+    >
       <Container className="mb-10">
         <SectionHeader
           eyebrow="— THEY PLAYED HERE FIRST"
@@ -25,7 +28,9 @@ export function LegendsSection() {
           }
         />
       </Container>
-      <LegendsGrid legends={featuredLegends} layout="reel" />
+      {featuredLegends.length > 0 ? (
+        <LegendsGrid legends={featuredLegends} layout="reel" />
+      ) : null}
       <Container className="mt-8">
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-charcoal-light" />

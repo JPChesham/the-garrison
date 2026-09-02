@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils/cn";
 
-type TagVariant = "purple" | "ember" | "amber" | "electric";
+type TagVariant = "purple" | "ember" | "amber" | "electric" | "green";
 
 type TagProps = {
   children: string;
@@ -13,6 +13,7 @@ const variantClasses: Record<TagVariant, string> = {
   ember: "bg-ember text-white",
   amber: "bg-amber text-charcoal",
   electric: "bg-electric text-white",
+  green: "bg-green text-white",
 };
 
 export function Tag({ children, variant = "purple", className }: TagProps) {

@@ -5,16 +5,24 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { cn } from "@/lib/utils/cn";
-import { navLinks, siteConfig } from "@/lib/navigation";
+import { navLinks, type SiteConfig } from "@/lib/navigation";
 import { MobileNav } from "./MobileNav";
 
-export function Header() {
+type HeaderProps = {
+  siteConfig: SiteConfig;
+};
+
+export function Header({ siteConfig }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
   return (
     <>
-      <MobileNav open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileNav
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        siteConfig={siteConfig}
+      />
       <header className="fixed top-0 right-0 left-0 z-30 border-b border-charcoal-light bg-charcoal/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-6 xl:px-12">
           <div className="flex items-center gap-8">
@@ -56,7 +64,7 @@ export function Header() {
             })}
           </nav>
           <div className="flex items-center gap-4">
-            <SocialLinks variant="header" />
+            <SocialLinks siteConfig={siteConfig} variant="header" />
           </div>
         </div>
       </header>
