@@ -1,3 +1,6 @@
+/** ISR / Data Cache TTL for all Hygraph Content API requests (5 minutes). */
+export const HYGRAPH_REVALIDATE_SECONDS = 300;
+
 const DEFAULT_ENDPOINT =
   "https://api-eu-west-2.hygraph.com/v2/cmrkv3vdq001s07uojw31l6lt/master";
 
@@ -19,7 +22,6 @@ type HygraphResponse<T> = {
 export async function hygraphFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
-  revalidateSeconds = 300,
 ): Promise<T> {
   const endpoint = process.env.HYGRAPH_ENDPOINT ?? DEFAULT_ENDPOINT;
   const token = process.env.HYGRAPH_TOKEN;
@@ -35,7 +37,12 @@ export async function hygraphFetch<T>(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: revalidateSeconds },
+    // Next.js 16 defaults fetch to uncached; opt in explicitly for sitewide ISR.
+    cache: "force-cache",
+    next: {
+      revalidate: HYGRAPH_REVALIDATE_SECONDS,
+      tags: ["hygraph"],
+    },
   });
 
   if (!response.ok) {

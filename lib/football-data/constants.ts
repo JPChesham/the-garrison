@@ -59,4 +59,5 @@ export const TRACKED_COMPETITION_IDS = Object.values(TRACKED_COMPETITIONS)
 /** Upstream + page cache TTL. Client polls every 10s against a cached API route. */
 export const FIXTURES_REVALIDATE_SECONDS = 10;
 export const FIXTURES_POLL_INTERVAL_MS = 10_000;
-export const FIXTURES_LOOKAHEAD_DAYS = 15;
+/** football-data.org rejects ranges longer than 10 days. */
+export const FIXTURES_LOOKAHEAD_DAYS = 10;
