@@ -5,9 +5,6 @@ import { Header } from "@/components/layout/Header";
 import { getSiteSettings } from "@/lib/hygraph/get-site-settings";
 import "./globals.css";
 
-/** Match Hygraph Data Cache TTL so every route revalidates every 5 minutes. */
-export const revalidate = 300;
-
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
   weight: "400",

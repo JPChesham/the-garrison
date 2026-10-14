@@ -1,8 +1,7 @@
-/** ISR / Data Cache TTL for all Hygraph Content API requests (5 minutes). */
-export const HYGRAPH_REVALIDATE_SECONDS = 300;
-
 const DEFAULT_ENDPOINT =
   "https://api-eu-west-2.hygraph.com/v2/cmrkv3vdq001s07uojw31l6lt/master";
+
+const MAX_RATE_LIMIT_RETRIES = 5;
 
 export class HygraphError extends Error {
   constructor(
@@ -30,20 +29,30 @@ export async function hygraphFetch<T>(
     throw new HygraphError("Missing HYGRAPH_TOKEN");
   }
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query, variables }),
-    // Next.js 16 defaults fetch to uncached; opt in explicitly for sitewide ISR.
-    cache: "force-cache",
-    next: {
-      revalidate: HYGRAPH_REVALIDATE_SECONDS,
-      tags: ["hygraph"],
-    },
-  });
+  let response: Response;
+
+  for (let attempt = 0; ; attempt++) {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query, variables }),
+      // Static export: runs at build time only; dedupe identical queries across pages.
+      cache: "force-cache",
+    });
+
+    if (response.status !== 429 || attempt >= MAX_RATE_LIMIT_RETRIES) break;
+
+    // Parallel build workers can exceed Hygraph's rate limit; a failure here
+    // would bake fallback content into the static HTML until the next build.
+    const retryAfterSeconds = Number(response.headers.get("retry-after"));
+    const delayMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+      ? retryAfterSeconds * 1000
+      : 500 * 2 ** attempt + Math.random() * 250;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
 
   if (!response.ok) {
     throw new HygraphError(

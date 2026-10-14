@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# DigitalOcean Functions
+digitalocean-functions/.deployed/
+digitalocean-functions/**/node_modules/
+digitalocean-functions/**/__deployer__.zip

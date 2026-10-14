@@ -1,0 +1,15 @@
+packages:
+  - name: sport
+    functions:
+      - name: fixtures
+        runtime: nodejs:24
+        web: true
+        annotations:
+          # Disable DO's default CORS (*) so we control origins ourselves
+          web-custom-options: true
+        environment:
+          # Comma-separated list of allowed browser origins
+          ALLOWED_ORIGINS: "${ALLOWED_ORIGINS}"
+          FOOTBALL_DATA_API_TOKEN: "${FOOTBALL_DATA_API_TOKEN}"
+        limits:
+          timeout: 10000

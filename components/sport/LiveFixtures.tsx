@@ -6,7 +6,9 @@ import {
   FixturesList,
   FixturesListWithLink,
 } from "@/components/sport/FixturesList";
-import { FIXTURES_POLL_INTERVAL_MS } from "@/lib/football-data/constants";
+
+const FIXTURES_POLL_INTERVAL_MS = 10_000;
+const FIXTURES_API_URL = process.env.NEXT_PUBLIC_FIXTURES_API_URL;
 
 type LiveFixturesProps = {
   limit?: number;
@@ -15,7 +17,11 @@ type LiveFixturesProps = {
 };
 
 async function fetchFixtures(limit: number): Promise<FixtureData[]> {
-  const response = await fetch(`/api/sport/fixtures?limit=${limit}`, {
+  if (!FIXTURES_API_URL) {
+    throw new Error("Missing NEXT_PUBLIC_FIXTURES_API_URL");
+  }
+
+  const response = await fetch(`${FIXTURES_API_URL}?limit=${limit}`, {
     cache: "no-store",
   });
 
