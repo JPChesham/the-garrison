@@ -81,6 +81,17 @@ export function Footer({ siteConfig }: FooterProps) {
             © {year} The Garrison, Barnsley. All rights reserved. Drink
             responsibly. 18+
           </p>
+          <p className="mt-2 text-center font-barlow text-xs text-white">
+            Website by{" "}
+            <a
+              href="https://jpcoding.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-ember"
+            >
+              JPCoding
+            </a>
+          </p>
         </div>
       </Container>
     </footer>
